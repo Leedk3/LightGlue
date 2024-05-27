@@ -7,7 +7,8 @@ import cv2
 import kornia
 import numpy as np
 import torch
-
+from torchvision import transforms 
+from PIL import Image
 
 class ImagePreprocessor:
     default_conf = {
@@ -92,6 +93,13 @@ def numpy_image_to_torch(image: np.ndarray) -> torch.Tensor:
         raise ValueError(f"Not an image: {image.shape}")
     return torch.tensor(image / 255.0, dtype=torch.float)
 
+def pil_image_to_torch(image: Image.Image) -> torch.Tensor:
+    """Convert a PIL image to a PyTorch tensor and normalize the image tensor."""
+    transform = transforms.Compose([
+        transforms.ToTensor()  # Converts a PIL image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0]
+    ])
+    tensor = transform(image)
+    return tensor
 
 def resize_image(
     image: np.ndarray,
